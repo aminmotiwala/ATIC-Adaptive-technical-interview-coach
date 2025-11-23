@@ -26,36 +26,48 @@ ATIC solves these problems by providing:
 
 ATIC implements a **Sequential Multi-Agent System** with internal loops, powered by **Gemini 2.5 Flash Lite** for the 5-point bonus:
 
-### Agent 1: Interviewer Agent (Goal-Based)
-- **Role:** Primary interview conductor and session orchestrator
+### HandoffCustomAgent (Coordination)
+- **Role:** Orchestrates agent handoffs based on session completion signals
+- **Location:** `interviewer/agent.py`
 - **Responsibilities:**
-  - 4-step session initialization and context gathering
-  - Dynamic question generation based on user profile and JD analysis
-  - Real-time response evaluation and difficulty adjustment
-  - Code execution management for technical assessments
+  - Manages sequential workflow between three specialized agents
+  - Monitors for completion signals to trigger agent transitions
+  - Coordinates context passing between agents
 
-### Agent 2: Researcher Agent (Utility-Based)
-- **Role:** Real-time knowledge validation and industry research
+### SessionInitializer Agent (Assessment)
+- **Role:** Comprehensive user profiling and job description analysis
+- **Location:** `interviewer/agent.py`
 - **Responsibilities:**
-  - Technical concept validation and best practices lookup
-  - Industry standard verification and market trend analysis
-  - Company-specific engineering culture research
-  - System design pattern and architecture validation
+  - Professional background and experience assessment
+  - Target position details and job description collection
+  - Requirements analysis and seniority level detection
+  - Profile completion with structured summary
 
-### Agent 3: Feedback Agent (Learning)
-- **Role:** Performance synthesis and adaptive learning management
+### InterviewConductor Agent (Goal-Based)
+- **Role:** Technical interview execution and performance evaluation
+- **Location:** `interviewer/agent.py`
 - **Responsibilities:**
-  - Comprehensive performance analysis and scoring
-  - Memory bank updates and learning progression tracking
-  - Personalized feedback generation and improvement recommendations
-  - Long-term adaptation strategy development
+  - Technical question generation based on user profile
+  - Adaptive difficulty adjustment during interview
+  - Response evaluation and documentation
+  - Performance assessment across multiple criteria
+
+### FeedbackAnalyzer Agent (Learning)
+- **Role:** Performance analysis and learning recommendations
+- **Location:** `interviewer/agent.py`
+- **Responsibilities:**
+  - Comprehensive performance scoring (6 categories)
+  - Strengths identification and improvement opportunities
+  - Actionable recommendations and learning resources
+  - Progress tracking and adaptive learning management
 
 ## 🎯 Key Features Implementation
 
 ### 1. Multi-Agent System (Sequential + Loops)
-- **Sequential Execution:** Interviewer → Researcher → Feedback → Interviewer
-- **Internal Loops:** Dynamic question adjustment based on performance feedback
+- **Sequential Execution:** SessionInitializer → InterviewConductor → FeedbackAnalyzer
+- **Handoff Coordination:** HandoffCustomAgent manages transitions based on completion signals
 - **Agent Coordination:** Seamless data flow and context sharing between agents
+- **Signal-Based Transitions:** Each agent signals completion to trigger next phase
 
 ### 2. Sessions & Memory (Long-term Memory)
 - **Memory Bank:** SQLite-based persistent storage for user profiles and performance history
@@ -99,18 +111,25 @@ atic-agent/
 ├── __init__.py             # Package initialization
 ├── .env                    # Environment configuration
 ├── requirements.txt        # Python dependencies
-├── agents/                 # Multi-agent implementations
-│   ├── interviewer_agent.py    # Goal-based interview conductor
-│   ├── researcher_agent.py     # Utility-based research agent
-│   └── feedback_agent.py       # Learning agent for adaptation
+├── agents/                 # Agent base directory
+│   └── __init__.py
+├── interviewer/            # Multi-agent system implementation
+│   ├── __init__.py
+│   └── agent.py                # HandoffCustomAgent with SessionInitializer, InterviewConductor, and FeedbackAnalyzer
 ├── sessions/               # Session management
+│   ├── __init__.py
 │   └── session_manager.py      # 4-step initialization process
 ├── memory/                 # Long-term memory system
-│   └── memory_bank.py          # SQLite-based persistent storage
+│   ├── __init__.py
+│   ├── memory_bank.py          # SQLite-based persistent storage
+│   └── data/
+│       └── atic_memory.db      # SQLite database file
 ├── tools/                  # ADK tools integration
+│   ├── __init__.py
 │   ├── code_execution.py       # Secure code execution
 │   └── google_search.py        # Real-time search capabilities
 └── config/                 # Configuration management
+    ├── __init__.py
     └── settings.py             # Centralized configuration
 ```
 
@@ -146,7 +165,7 @@ cp .env.example .env
 
 4. **Run ATIC:**
 ```bash
-python agent.py
+python interviewer/agent.py
 ```
 
 ## 🎮 Usage Example
