@@ -1,0 +1,24 @@
+# ATIC Agent Dependencies
+# Author: Amin Motiwala
+
+# Core ADK Framework
+google-adk>=1.0.0
+
+# Environment and Configuration
+python-dotenv>=1.0.0
+
+# Database and Storage
+# sqlite3  # Built into Python
+# HTTP Requests for Google Search
+requests>=2.31.0
+
+# Date and Time Utilities
+python-dateutil>=2.8.2
+
+# JSON and Data Processing
+# (Built-in modules: json, typing, pathlib)
+
+# Development and Testing (optional)
+pytest>=7.4.0
+black>=23.0.0
+isort>=5.12.0
